@@ -42,6 +42,51 @@ app.post("/todos", async (req, res) => {
   }
 });
 
+app.put("/todos/:id", async (req, res) => {
+  try {
+    const todo = await knex("todos")
+      .where("id", req.params.id)
+      .update({
+        title: req.body.title,
+        completed: req.body.completed,
+      })
+      .returning("*");
+
+    res.status(200).json(todo[0]);
+  } catch (error) {
+    console.error("error updating todos :", error);
+  }
+  res.status(500).json({ error: "Internal Server Error" });
+});
+
+app.delete("/todos/:id", async (req, res) => {
+  try {
+    const deletedTodo = await knex("todos")
+      .where("id", req.params.id)
+      .del()
+      .returning("*");
+
+    res.status(200).json(deletedTodo[0]);
+  } catch (error) {
+    console.error("error updating todos :", error);
+  }
+  res.status(500).json({ error: "Internal Server Error" });
+});
+
+app.get("/todos-user/:id", async (req, res) => {
+  try {
+    const todosOfUser = await knex
+      .from("todos")
+      .innerJoin("users", "todos.user_id", "users.id")
+      .where("todos.user_id", req.params.id);
+
+    res.send(todosOfUser);
+  } catch (error) {
+    console.error("error updating todos :", error);
+  }
+  res.status(500).json({ error: "Internal Server Error" });
+});
+
 // const { Client } = require("pg");
 
 // const postgresConnectionString = {
