@@ -3,6 +3,7 @@ const registerRoute = require("./auth/auth");
 const loginRoute = require("./auth/auth");
 const app = express();
 const dotenv = require("dotenv").config();
+const knex = require("./db/knex");
 
 app.use(express.json());
 app.use(express.urlencoded({ extended: false }));
@@ -16,32 +17,57 @@ app.get("/", (req, res) => {
   res.status(201).json({ recieved: true });
 });
 
-const { Client } = require("pg");
-
-const postgresConnectionString = {
-  connectionString: process.env.POSTGRES_CONNECTION_STRING,
-  host: process.env.POSTGRES_HOST,
-  port: process.env.POSTGRES_PORT,
-  user: process.env.POSTGRES_USER,
-  password: process.env.POSTGRES_PASSWORD,
-};
-
-console.log(postgresConnectionString.connectionString);
-
-async function testPostgresConnection() {
-  const client = new Client(postgresConnectionString);
-
+app.get("/todos", async (req, res) => {
   try {
-    await client.connect();
-    console.log("Connected to PostgreSQL database successfully!");
+    const data = await knex.select("*").from("todos");
+    res.status(200).json(data);
   } catch (error) {
-    console.error("Error connecting to PostgreSQL database:", error.message);
-  } finally {
-    await client.end();
+    console.error("error fetching data :", error);
   }
-}
+});
 
-testPostgresConnection();
+app.post("/todos", async (req, res) => {
+  try {
+    const newTodo = await knex("todos")
+      .insert({
+        title: "finish 31github challenge",
+        user_id: 1,
+      })
+      .returning("*"); // Use 'returning' to get the inserted row
+
+    res.status(200).json(newTodo[0]); // Return the first element of the returned array
+  } catch (error) {
+    console.error("error creating todo :", error);
+    res.status(500).json({ error: "Internal Server Error" });
+  }
+});
+
+// const { Client } = require("pg");
+
+// const postgresConnectionString = {
+//   connectionString: process.env.POSTGRES_CONNECTION_STRING,
+//   host: process.env.POSTGRES_HOST,
+//   port: process.env.POSTGRES_PORT,
+//   user: process.env.POSTGRES_USER,
+//   password: process.env.POSTGRES_PASSWORD,
+// };
+
+// console.log(postgresConnectionString.connectionString);
+
+// async function testPostgresConnection() {
+//   const client = new Client(postgresConnectionString);
+
+//   try {
+//     await client.connect();
+//     console.log("Connected to PostgreSQL database successfully!");
+//   } catch (error) {
+//     console.error("Error connecting to PostgreSQL database:", error.message);
+//   } finally {
+//     await client.end();
+//   }
+// }
+
+// testPostgresConnection();
 
 const port = 3000;
 
