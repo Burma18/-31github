@@ -1,60 +1,42 @@
 const express = require("express");
 const fs = require("fs");
-const { generateSalt, generateHash, comparePW } = require("../utils/helpers");
-const path = require("path");
+const { generateHash } = require("../utils/helpers");
+const knex = require("../db/knex");
 const router = express.Router();
 const bcrypt = require("bcrypt");
-
-let users = [];
-
-const filePath = path.join(__dirname, "..", "data", "data.txt");
 
 router.post("/register", async (req, res) => {
   const { firstName, lastName, email, password } = req.body;
 
-  const hash = await generateHash(password, 10, (err, result) => {
-    if (err) {
-      console.error("error hashing");
-      return;
+  const existingUser = await knex("users").select("*").where("email", email);
+
+  if (existingUser.length > 0) {
+    res.status(400).json("There is already a user with this email");
+  } else {
+    try {
+      const hashedPassword = await generateHash(password, 10);
+      const userCreated = await knex("users")
+        .insert({
+          firstName: firstName,
+          lastName: lastName,
+          email: email,
+          password: hashedPassword,
+        })
+        .returning("*");
+
+      res.status(200).json(userCreated[0]);
+    } catch (error) {
+      console.error(error);
+      res.status(400).json("Error registering user");
     }
-  });
-
-  try {
-    const usersFromFile = await fs.promises.readFile(filePath, "utf-8");
-
-    users = JSON.parse(usersFromFile);
-
-    const user = { id: users.length + 1, firstName, lastName, email, hash };
-
-    users.push(user);
-
-    await fs.promises.writeFile(filePath, JSON.stringify(users));
-    console.log(" successfully written");
-  } catch (error) {
-    console.error(error);
   }
-
-  try {
-    const userFromFile = await fs.promises.readFile(filePath, "utf-8");
-    console.log("users from readFile :", userFromFile);
-  } catch (error) {
-    console.error(error);
-  }
-
-  res.status(201).json(true);
 });
 
 router.post("/login", async (req, res) => {
   try {
-    const usersFromFile = await fs.promises.readFile(filePath, "utf-8");
-
-    parsedUsers = JSON.parse(usersFromFile);
-
-    console.log("length :", parsedUsers.length);
-
     const { email, password } = req.body;
 
-    const user = parsedUsers.find((u) => u.email === email);
+    const user = await knex("users").select("*").where("email", email);
 
     console.log("user :", user);
 
@@ -62,14 +44,17 @@ router.post("/login", async (req, res) => {
       console.error("No user found");
     }
 
-    const comparison = await bcrypt.compare(password, user.hash);
+    const comparison = await bcrypt.compare(password, user[0].password);
 
     if (!comparison) {
       console.error("passwords didn't match");
     }
-  } catch (error) {}
 
-  res.status(201).json(true);
+    res.status(200).json(user);
+  } catch (error) {
+    console.error("there was error logging in");
+    res.status(404).json("error loggin in");
+  }
 });
 
 module.exports = router;
