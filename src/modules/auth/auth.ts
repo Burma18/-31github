@@ -1,7 +1,7 @@
 const express = require("express");
 const fs = require("fs");
-const { generateHash } = require("../utils/helpers");
-const knex = require("../db/knex");
+const { generateHash } = require("../../utils/helpers");
+const knex = require("./db/knex");
 const router = express.Router();
 const bcrypt = require("bcrypt");
 

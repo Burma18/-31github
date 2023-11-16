@@ -1,1 +1,0 @@
-[{"id":1,"firstName":"Burma","lastName":"Rysmatova","email":"burma@wedevx.co","hash":"$2b$10$ne4BxUGJVden2AqdRqVd7eNlMuV3yaEGb38qaG8fYV0y9FDojEtT2"},]

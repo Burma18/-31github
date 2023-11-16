@@ -1,36 +1,36 @@
-const dotenv = require("dotenv");
-dotenv.config();
+// import dotenv from "dotenv";
+// dotenv.config();
 
-const postgresConnectionString = {
-  connectionString: process.env.POSTGRES_CONNECTION_STRING,
-  host: process.env.POSTGRES_HOST,
-  port: process.env.POSTGRES_PORT,
-  user: process.env.POSTGRES_USER,
-  password: process.env.POSTGRES_PASSWORD,
-};
+// const postgresConnectionString = {
+//   connectionString: process.env.POSTGRES_CONNECTION_STRING,
+//   host: process.env.POSTGRES_HOST,
+//   port: process.env.POSTGRES_PORT,
+//   user: process.env.POSTGRES_USER,
+//   password: process.env.POSTGRES_PASSWORD,
+// };
 
-module.exports = {
-  development: {
-    client: "pg",
-    connection: postgresConnectionString,
-    migrations: {
-      directory: __dirname + "/db/migrations",
-    },
-    seeds: {
-      directory: __dirname + "/db/seeds",
-    },
-  },
-  production: {
-    client: "pg",
-    connection: "",
-    migrations: {
-      directory: __dirname + "/db/migrations",
-    },
-    seeds: {
-      directory: __dirname + "/db/seeds",
-    },
-  },
-};
+// module.exports = {
+//   development: {
+//     client: "pg",
+//     connection: postgresConnectionString,
+//     migrations: {
+//       directory: __dirname + "/db/migrations",
+//     },
+//     seeds: {
+//       directory: __dirname + "/db/seeds",
+//     },
+//   },
+//   production: {
+//     client: "pg",
+//     connection: "",
+//     migrations: {
+//       directory: __dirname + "/db/migrations",
+//     },
+//     seeds: {
+//       directory: __dirname + "/db/seeds",
+//     },
+//   },
+// };
 
 // /**
 //  * @param { import("knex").Knex } knex

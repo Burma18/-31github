@@ -1,4 +1,4 @@
-const bcrypt = require("bcrypt");
+import bcrypt from "bcrypt";
 
 // const generateSalt = (salt, cb) => {
 //   bcrypt.genSalt(salt, (err, data) => {
@@ -10,19 +10,20 @@ const bcrypt = require("bcrypt");
 //   });
 // };
 
-const generateSalt = (saltRounds) => {
-  return new Promise((resolve, reject) => {
-    bcrypt.genSalt(saltRounds, (err, salt) => {
-      if (err) {
-        console.error("Error generating salt:", err);
-        reject(err);
-      } else {
-        resolve(salt);
-      }
-    });
-  });
-};
+// const generateSalt = (saltRounds) => {
+//   return new Promise((resolve, reject) => {
+//     bcrypt.genSalt(saltRounds, (err, salt) => {
+//       if (err) {
+//         console.error("Error generating salt:", err);
+//         reject(err);
+//       } else {
+//         resolve(salt);
+//       }
+//     });
+//   });
+// };
 
+// method using callbacks
 // const generateHash = (password, salt, cb) => {
 //   console.log("password and hash for generateHash function :", password, salt);
 //   bcrypt.hash(password, salt, (err, result) => {
@@ -36,9 +37,10 @@ const generateSalt = (saltRounds) => {
 //   });
 // };
 
-const generateHash = (password, saltRounds) => {
+// method using Promises
+export const generateHash = (password: string, saltRounds: number) => {
   return new Promise((resolve, reject) => {
-    bcrypt.hash(password, saltRounds, (err, hash) => {
+    bcrypt.hash(password, saltRounds, (err: any, hash: unknown) => {
       if (err) {
         reject(err);
       } else {
@@ -48,8 +50,8 @@ const generateHash = (password, saltRounds) => {
   });
 };
 
-const comparePW = (password, hash) => {
-  bcrypt.compare(password, hash, function (err, result) {
+const comparePW = (password: string, hash: string) => {
+  bcrypt.compare(password, hash, function (err: any, result: any) {
     if (err) {
       console.error("err :", err);
     } else {
@@ -60,7 +62,6 @@ const comparePW = (password, hash) => {
 };
 
 module.exports = {
-  generateSalt,
   generateHash,
   comparePW,
 };
