@@ -1,4 +1,5 @@
 import dotenv from "dotenv";
+import knex from "knex";
 dotenv.config();
 
 const postgresConnectionString = {
@@ -9,25 +10,25 @@ const postgresConnectionString = {
   password: process.env.POSTGRES_PASSWORD,
 };
 
-const KNEX_CONFIG = {
+const KNEX_CONFIG: any = {
   development: {
     client: "pg",
     connection: postgresConnectionString,
     migrations: {
-      directory: __dirname + "/db/migrations",
+      directory: __dirname + "../../_db/migrations",
     },
     seeds: {
-      directory: __dirname + "/db/seeds",
+      directory: __dirname + "../../_db/seeds",
     },
   },
   production: {
     client: "pg",
     connection: "",
     migrations: {
-      directory: __dirname + "/db/migrations",
+      directory: __dirname + "../../_db/migrations",
     },
     seeds: {
-      directory: __dirname + "/db/seeds",
+      directory: __dirname + "../../_db/seeds",
     },
   },
 };
@@ -38,7 +39,11 @@ const serverConfig = {
   INFERENCE_TYPE: "native",
 };
 
-export default {
+const environment = process.env.NODE_ENV || "development";
+const configKnex = KNEX_CONFIG[environment];
+
+export const db = knex(configKnex);
+export const config = {
   knex: KNEX_CONFIG,
   serverConfig: serverConfig,
 };

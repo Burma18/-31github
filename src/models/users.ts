@@ -1,8 +1,8 @@
-import knex from "../configs/config";
+import { db } from "../configs/enironments/env";
 import wrapper from "../services/wrapper";
 
 const getUsers = async () => {
-  const query = knex.select("*").from("users");
+  const query = db.select("*").from("users");
   const result = await query;
 
   if (!result || result.length === 0) {

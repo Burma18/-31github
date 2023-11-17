@@ -1,22 +1,40 @@
 import express from "express";
-// import registerRoute from "./modules";
-// import loginRoute from "./src/auth/auth";
 const app = express();
-import config from "../src/configs/enironments/env";
-const dotenv = require("dotenv").config();
-// import knex from "./src/auth/db/knex";
+import { config, db } from "../src/configs/enironments/env";
+import routes from "./routes/index";
 
-// app.use(express.json());
-// app.use(express.urlencoded({ extended: false }));
+app.use(express.json());
+app.use(express.urlencoded({ extended: false }));
 
-// // app.use("/auth", registerRoute);
-// // app.use("/auth", loginRoute);
+app.use((req: any, res: any, next: any) => {
+  res.setHeader("Access-Control-Allow-Methods", "GET,PUT,POST,DELETE,OPTIONS");
 
-// app.get("/", (req, res) => {
-//   console.log("inside route");
+  next();
+});
 
-//   res.status(201).json({ recieved: true });
-// });
+app.use("/api/v1", routes);
+
+app.get("/", async (req: any, res: any) => {
+  console.log("inside route");
+
+  try {
+    const query = db.select("*").from("users");
+    const result = await query;
+
+    console.log(result);
+    if (!result || result.length === 0) {
+      // If there's no result, send an empty array or an appropriate message
+      return res.status(404).json({ message: "No users found" });
+    }
+
+    // Send the result as a JSON response
+    return res.status(200).json(result);
+  } catch (error) {
+    console.error(error);
+    // If an error occurs, send an error response
+    return res.status(500).json({ error: "Internal server error" });
+  }
+});
 
 // app.get("/todos", async (req, res) => {
 //   try {
@@ -114,6 +132,18 @@ const dotenv = require("dotenv").config();
 // }
 
 // testPostgresConnection();
+
+const dbSelfCheck = async () => {
+  const dbSelfCheckQuery = db.select(db.raw("now()"));
+
+  try {
+    const result = await dbSelfCheckQuery;
+    console.log("POSTGRES-DATABASE IS UP AND RUNNING");
+  } catch (error) {
+    console.log("PORSTGRES DB ERROR: ", error);
+  }
+};
+dbSelfCheck();
 
 app.listen(config.serverConfig.SERVER_PORT, () =>
   console.log("listening on port 3000")

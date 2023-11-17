@@ -1,7 +1,18 @@
-import knex from "../configs/config";
+import { db } from "../configs/enironments/env";
+import wrapper from "../services/wrapper";
 
-const registerUser = async () => {
-  const registerUserQuery = knex.select("*").from("users");
+const registerUser = async (
+  firstName: string,
+  lastName: string,
+  email: string,
+  hashedPassword: string
+) => {
+  const registerUserQuery = db("users").insert({
+    firstName: firstName,
+    lastName: lastName,
+    email: email,
+    password: hashedPassword,
+  });
 
   const result = await registerUserQuery;
 
@@ -10,4 +21,8 @@ const registerUser = async () => {
   }
 
   return result;
+};
+
+export default {
+  registerUser: wrapper.wrap(registerUser),
 };
