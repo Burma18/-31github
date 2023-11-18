@@ -50,18 +50,13 @@ export const generateHash = (password: string, saltRounds: number) => {
   });
 };
 
-const comparePW = (password: string, hash: string) => {
-  bcrypt.compare(password, hash, function (err: any, result: any) {
-    if (err) {
-      console.error("err :", err);
-    } else {
-      console.log("hash :", result);
-      return result;
-    }
-  });
-};
-
-module.exports = {
-  generateHash,
-  comparePW,
-};
+// const comparePW = (password: string, hash: string) => {
+//   bcrypt.compare(password, hash, function (err: any, result: any) {
+//     if (err) {
+//       console.error("err :", err);
+//     } else {
+//       console.log("hash :", result);
+//       return result;
+//     }
+//   });
+// };

@@ -1,26 +1,26 @@
 import { db } from "../configs/enironments/env";
 import wrapper from "../services/wrapper";
+import { generateHash } from "../utils/helpers";
 
-const registerUser = async (
-  firstName: string,
-  lastName: string,
-  email: string,
-  hashedPassword: string
-) => {
-  const registerUserQuery = db("users").insert({
-    firstName: firstName,
-    lastName: lastName,
-    email: email,
-    password: hashedPassword,
-  });
+const registerUser = async (userData: any) => {
+  const { firstName, lastName, email, password } = userData;
 
-  const result = await registerUserQuery;
+  const existingUser = await db("users").select("*").where("email", email);
 
-  if (!result || result.length === 0) {
-    return null;
+  if (existingUser.length > 0) {
+    throw new Error("existing user");
   }
+  const hashedPassword = await generateHash(password, 10);
+  const userCreated = await db("users")
+    .insert({
+      firstName: firstName,
+      lastName: lastName,
+      email: email,
+      password: hashedPassword,
+    })
+    .returning("*");
 
-  return result;
+  return userCreated[0];
 };
 
 export default {

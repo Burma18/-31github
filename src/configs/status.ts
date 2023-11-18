@@ -42,6 +42,14 @@ const getStatus = (code: string) => {
       };
       break;
 
+    case "existing user":
+      status = {
+        code: code,
+        error: true,
+        message: "There is already a user with this email",
+      };
+      break;
+
     case "generic_fail":
     default:
       status = {

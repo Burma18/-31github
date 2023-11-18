@@ -21,7 +21,6 @@ app.get("/", async (req: any, res: any) => {
     const query = db.select("*").from("users");
     const result = await query;
 
-    console.log(result);
     if (!result || result.length === 0) {
       // If there's no result, send an empty array or an appropriate message
       return res.status(404).json({ message: "No users found" });
