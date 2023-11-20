@@ -50,6 +50,21 @@ const getStatus = (code: string) => {
       };
       break;
 
+    case "no user found":
+      status = {
+        code: code,
+        error: true,
+        message: "There is no such user found",
+      };
+      break;
+
+    case "password mismatch":
+      status = {
+        code: code,
+        error: true,
+        message: "Provided password doesn't match",
+      };
+      break;
     case "generic_fail":
     default:
       status = {

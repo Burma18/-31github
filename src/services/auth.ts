@@ -11,6 +11,16 @@ const registerUser = async (userData: any) => {
   return response;
 };
 
+const login = async (userData: any) => {
+  const login: any = await authModel.login(userData);
+  let response: any = status.getStatus("success");
+  response.data = {};
+  response.data.user = login;
+
+  return response;
+};
+
 export default {
   registerUser: wrapper.wrap(registerUser),
+  login: wrapper.wrap(login),
 };
