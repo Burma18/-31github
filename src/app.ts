@@ -1,7 +1,9 @@
 import express from "express";
-const app = express();
 import { config, db } from "../src/configs/enironments/env";
 import routes from "./routes/index";
+import status from "./configs/status";
+
+const app = express();
 
 app.use(express.json());
 app.use(express.urlencoded({ extended: false }));
@@ -35,103 +37,13 @@ app.get("/", async (req: any, res: any) => {
   }
 });
 
-// app.get("/todos", async (req, res) => {
-//   try {
-//     const data = await knex.select("*").from("todos");
-//     res.status(200).json(data);
-//   } catch (error) {
-//     console.error("error fetching data :", error);
-//   }
-// });
+// catch 404
+app.use((req: any, res: any, next: any) => {
+  res.statusCode = 404;
+  res.json(status.getStatus("url_missing"));
+});
 
-// app.post("/todos", async (req, res) => {
-//   try {
-//     const newTodo = await knex("todos")
-//       .insert({
-//         title: "finish 31github challenge",
-//         user_id: 1,
-//       })
-//       .returning("*"); // Use 'returning' to get the inserted row
-
-//     res.status(200).json(newTodo[0]); // Return the first element of the returned array
-//   } catch (error) {
-//     console.error("error creating todo :", error);
-//     res.status(500).json({ error: "Internal Server Error" });
-//   }
-// });
-
-// app.put("/todos/:id", async (req, res) => {
-//   try {
-//     const todo = await knex("todos")
-//       .where("id", req.params.id)
-//       .update({
-//         title: req.body.title,
-//         completed: req.body.completed,
-//       })
-//       .returning("*");
-
-//     res.status(200).json(todo[0]);
-//   } catch (error) {
-//     console.error("error updating todos :", error);
-//   }
-//   res.status(500).json({ error: "Internal Server Error" });
-// });
-
-// app.delete("/todos/:id", async (req, res) => {
-//   try {
-//     const deletedTodo = await knex("todos")
-//       .where("id", req.params.id)
-//       .del()
-//       .returning("*");
-
-//     res.status(200).json(deletedTodo[0]);
-//   } catch (error) {
-//     console.error("error updating todos :", error);
-//   }
-//   res.status(500).json({ error: "Internal Server Error" });
-// });
-
-// app.get("/todos-user/:id", async (req, res) => {
-//   try {
-//     const todosOfUser = await knex
-//       .from("todos")
-//       .innerJoin("users", "todos.user_id", "users.id")
-//       .where("todos.user_id", req.params.id);
-
-//     res.send(todosOfUser);
-//   } catch (error) {
-//     console.error("error updating todos :", error);
-//   }
-//   res.status(500).json({ error: "Internal Server Error" });
-// });
-
-// const { Client } = require("pg");
-
-// const postgresConnectionString = {
-//   connectionString: process.env.POSTGRES_CONNECTION_STRING,
-//   host: process.env.POSTGRES_HOST,
-//   port: process.env.POSTGRES_PORT,
-//   user: process.env.POSTGRES_USER,
-//   password: process.env.POSTGRES_PASSWORD,
-// };
-
-// console.log(postgresConnectionString.connectionString);
-
-// async function testPostgresConnection() {
-//   const client = new Client(postgresConnectionString);
-
-//   try {
-//     await client.connect();
-//     console.log("Connected to PostgreSQL database successfully!");
-//   } catch (error) {
-//     console.error("Error connecting to PostgreSQL database:", error.message);
-//   } finally {
-//     await client.end();
-//   }
-// }
-
-// testPostgresConnection();
-
+// check db
 const dbSelfCheck = async () => {
   const dbSelfCheckQuery = db.select(db.raw("now()"));
 
@@ -144,6 +56,19 @@ const dbSelfCheck = async () => {
 };
 dbSelfCheck();
 
+// global error handler
+app.use((err: any, req: any, res: any, next: any) => {
+  if (err) {
+    console.log(new Date().toISOString(), err);
+  }
+  if (err.hasOwnProperty("error")) {
+    res.json(err);
+  } else {
+    let err = status.getStatus("generic_fail");
+    res.json(err);
+  }
+});
+
 app.listen(config.serverConfig.SERVER_PORT, () =>
-  console.log("listening on port 3000")
+  console.log("listening on port: ", config.serverConfig.SERVER_PORT)
 );

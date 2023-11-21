@@ -1,7 +1,7 @@
 import bcrypt from "bcrypt";
 import { db } from "../configs/enironments/env";
 import wrapper from "../services/wrapper";
-import { generateHash } from "../utils/helpers";
+import { generateHash, sanitizeSqlResult } from "../utils/helpers";
 
 const registerUser = async (userData: any) => {
   const { firstName, lastName, email, password } = userData;
@@ -21,7 +21,7 @@ const registerUser = async (userData: any) => {
     })
     .returning("*");
 
-  return userCreated[0];
+  return sanitizeSqlResult(userCreated[0]);
 };
 
 const login = async (userData: any) => {
@@ -41,7 +41,7 @@ const login = async (userData: any) => {
     throw new Error("password mismatch");
   }
 
-  return user[0];
+  return sanitizeSqlResult(user[0]);
 };
 
 export default {

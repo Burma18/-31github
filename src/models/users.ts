@@ -1,5 +1,6 @@
 import { db } from "../configs/enironments/env";
 import wrapper from "../services/wrapper";
+import { sanitizeSqlResult } from "../utils/helpers";
 
 const getUsers = async () => {
   const query = db.select("*").from("users");
@@ -9,7 +10,7 @@ const getUsers = async () => {
     return null;
   }
 
-  return result;
+  return sanitizeSqlResult(result);
 };
 
 const getUser = async (params: any) => {
@@ -24,7 +25,7 @@ const getUser = async (params: any) => {
     throw new Error("no user found");
   }
 
-  return result;
+  return sanitizeSqlResult(result);
 };
 
 export default {

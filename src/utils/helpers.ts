@@ -50,6 +50,10 @@ export const generateHash = (password: string, saltRounds: number) => {
   });
 };
 
+export const sanitizeSqlResult = (result: any) => {
+  return JSON.parse(JSON.stringify(result));
+};
+
 // const comparePW = (password: string, hash: string) => {
 //   bcrypt.compare(password, hash, function (err: any, result: any) {
 //     if (err) {
