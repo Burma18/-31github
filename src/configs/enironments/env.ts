@@ -1,6 +1,9 @@
 import dotenv from "dotenv";
 import knex from "knex";
 dotenv.config();
+import pgSession from "connect-pg-simple";
+import session from "express-session";
+import path from "path";
 
 const postgresConnectionString = {
   connectionString: process.env.POSTGRES_CONNECTION_STRING,
@@ -15,10 +18,10 @@ const KNEX_CONFIG: any = {
     client: "pg",
     connection: postgresConnectionString,
     migrations: {
-      directory: __dirname + "../../_db/migrations",
+      directory: path.join(__dirname, "..", "..", "db", "migrations"),
     },
     seeds: {
-      directory: __dirname + "../../_db/seeds",
+      directory: path.join(__dirname, "..", "..", "db", "seeds"),
     },
   },
   production: {
@@ -42,8 +45,14 @@ const serverConfig = {
 const environment = process.env.NODE_ENV || "development";
 const configKnex = KNEX_CONFIG[environment];
 
+const sessionStore = new (pgSession(session))({
+  pool: configKnex,
+  tableName: "user_sessions",
+});
+
 export const db = knex(configKnex);
 export const config = {
   knex: KNEX_CONFIG,
   serverConfig: serverConfig,
+  sessionStore: sessionStore,
 };

@@ -14,6 +14,20 @@ app.use((req: any, res: any, next: any) => {
   next();
 });
 
+// app.use(
+//   expressSession({
+//     secret: "secret",
+//     resave: false, // don't save to session store unless there was a change in sessioin data
+//     saveUninitialized: false, // until smth is stored in it, don't create a session
+//     store: config.sessionStore,
+//     cookie: {
+//       secure: false,
+//       httpOnly: true,
+//       maxAge: 0, // expires when the browser is closed
+//     },
+//   })
+// );
+
 app.use("/api/v1", routes);
 
 app.get("/", async (req: any, res: any) => {
