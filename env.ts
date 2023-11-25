@@ -3,8 +3,6 @@ import knex from "knex";
 dotenv.config();
 import pgSession from "connect-pg-simple";
 import session from "express-session";
-import path from "path";
-// import smth from "../../db/migrations";
 
 const postgresConnectionString = {
   connectionString: process.env.POSTGRES_CONNECTION_STRING,
@@ -19,20 +17,20 @@ const KNEX_CONFIG: any = {
     client: "pg",
     connection: postgresConnectionString,
     migrations: {
-      directory: path.join(__dirname + "../../db/migrations"),
+      directory: "./db/migrations",
     },
     seeds: {
-      directory: path.join(__dirname + "..", "..", "db", "seeds"),
+      directory: "./db/seeds",
     },
   },
   production: {
     client: "pg",
     connection: "",
     migrations: {
-      directory: __dirname + "../../_db/migrations",
+      directory: "./db/migrations",
     },
     seeds: {
-      directory: __dirname + "../../_db/seeds",
+      directory: "./db/seeds",
     },
   },
 };
