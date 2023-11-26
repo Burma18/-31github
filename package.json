@@ -16,6 +16,7 @@
   "author": "Burma Rysmatova",
   "license": "ISC",
   "dependencies": {
+    "@types/pg": "^8.10.9",
     "bcrypt": "^5.1.1",
     "connect-pg-simple": "^9.0.1",
     "cookie-parser": "^1.4.6",

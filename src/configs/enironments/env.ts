@@ -1,10 +1,10 @@
 import dotenv from "dotenv";
-import knex from "knex";
 dotenv.config();
+import knex from "knex";
 import pgSession from "connect-pg-simple";
 import session from "express-session";
 import path from "path";
-// import smth from "../../db/migrations";
+// import db from "../../db/migrations";
 
 const postgresConnectionString = {
   connectionString: process.env.POSTGRES_CONNECTION_STRING,
@@ -14,15 +14,18 @@ const postgresConnectionString = {
   password: process.env.POSTGRES_PASSWORD,
 };
 
+console.log(postgresConnectionString.connectionString);
+console.log(process.env.POSTGRES_CONNECTION_STRING);
+
 const KNEX_CONFIG: any = {
   development: {
     client: "pg",
     connection: postgresConnectionString,
     migrations: {
-      directory: path.join(__dirname + "../../db/migrations"),
+      directory: __dirname + "./db/migrations",
     },
     seeds: {
-      directory: path.join(__dirname + "..", "..", "db", "seeds"),
+      directory: path.join(process.cwd(), "db", "seeds"),
     },
   },
   production: {

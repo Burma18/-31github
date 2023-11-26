@@ -1,7 +1,8 @@
 import express from "express";
-import { config, db } from "../src/configs/enironments/env";
+import { config, db } from "./configs/enironments/env";
 import routes from "./routes/index";
 import status from "./configs/status";
+import expressSession from "express-session";
 
 const app = express();
 
@@ -14,19 +15,19 @@ app.use((req: any, res: any, next: any) => {
   next();
 });
 
-// app.use(
-//   expressSession({
-//     secret: "secret",
-//     resave: false, // don't save to session store unless there was a change in sessioin data
-//     saveUninitialized: false, // until smth is stored in it, don't create a session
-//     store: config.sessionStore,
-//     cookie: {
-//       secure: false,
-//       httpOnly: true,
-//       maxAge: 0, // expires when the browser is closed
-//     },
-//   })
-// );
+app.use(
+  expressSession({
+    secret: "secret",
+    resave: false, // don't save to session store unless there was a change in sessioin data
+    saveUninitialized: false, // until smth is stored in it, don't create a session
+    store: config.sessionStore,
+    cookie: {
+      secure: false,
+      httpOnly: true,
+      maxAge: 0, // expires when the browser is closed
+    },
+  })
+);
 
 app.use("/api/v1", routes);
 
@@ -82,6 +83,8 @@ app.use((err: any, req: any, res: any, next: any) => {
     res.json(err);
   }
 });
+
+console.log("file: ", process.env.POSTGRES_CONNECTION_STRING);
 
 app.listen(config.serverConfig.SERVER_PORT, () =>
   console.log("listening on port: ", config.serverConfig.SERVER_PORT)
