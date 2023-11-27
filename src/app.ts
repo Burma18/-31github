@@ -84,8 +84,6 @@ app.use((err: any, req: any, res: any, next: any) => {
   }
 });
 
-console.log("file: ", process.env.POSTGRES_CONNECTION_STRING);
-
 app.listen(config.serverConfig.SERVER_PORT, () =>
   console.log("listening on port: ", config.serverConfig.SERVER_PORT)
 );
