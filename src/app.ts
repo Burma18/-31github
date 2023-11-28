@@ -85,5 +85,5 @@ app.use((err: any, req: any, res: any, next: any) => {
 });
 
 app.listen(config.serverConfig.SERVER_PORT, () =>
-  console.log("listening on port: ", config.serverConfig.SERVER_PORT)
+  console.log("listening on port:  ", config.serverConfig.SERVER_PORT)
 );
