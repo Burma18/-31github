@@ -1,4 +1,4 @@
-import { db } from "../configs/enironments/env";
+import { db } from "../../knexfile";
 import wrapper from "../services/wrapper";
 import { sanitizeSqlResult } from "../utils/helpers";
 

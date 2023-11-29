@@ -1,5 +1,5 @@
 import bcrypt from "bcrypt";
-import { db } from "../configs/enironments/env";
+import { db } from "../../knexfile";
 import wrapper from "../services/wrapper";
 import { generateHash, sanitizeSqlResult } from "../utils/helpers";
 

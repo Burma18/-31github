@@ -1,5 +1,5 @@
 import express from "express";
-import { config, db } from "./configs/enironments/env";
+import { config, db } from "../knexfile";
 import routes from "./routes/index";
 import status from "./configs/status";
 import expressSession from "express-session";

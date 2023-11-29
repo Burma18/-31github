@@ -4,7 +4,6 @@ import knex from "knex";
 import pgSession from "connect-pg-simple";
 import session from "express-session";
 import path from "path";
-// import db from "../../db/migrations";
 
 const postgresConnectionString = {
   connectionString: process.env.POSTGRES_CONNECTION_STRING,
@@ -14,28 +13,27 @@ const postgresConnectionString = {
   password: process.env.POSTGRES_PASSWORD,
 };
 
-console.log(postgresConnectionString.connectionString);
-console.log(process.env.POSTGRES_CONNECTION_STRING);
+console.log(postgresConnectionString);
 
 const KNEX_CONFIG: any = {
   development: {
     client: "pg",
     connection: postgresConnectionString,
     migrations: {
-      directory: __dirname + "./db/migrations",
+      directory: path.join(__dirname + "/src/db/migrations"),
     },
     seeds: {
-      directory: path.join(process.cwd(), "db", "seeds"),
+      directory: path.join(__dirname, "/src/db/seeds"),
     },
   },
   production: {
     client: "pg",
     connection: "",
     migrations: {
-      directory: __dirname + "../../_db/migrations",
+      directory: __dirname + "./src/configs/enironments/migrations",
     },
     seeds: {
-      directory: __dirname + "../../_db/seeds",
+      directory: __dirname + "./src/configs/enironments/seeds",
     },
   },
 };
@@ -53,6 +51,8 @@ const sessionStore = new (pgSession(session))({
   pool: configKnex,
   tableName: "user_sessions",
 });
+
+export default KNEX_CONFIG;
 
 export const db = knex(configKnex);
 export const config = {
