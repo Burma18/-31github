@@ -25,7 +25,7 @@ const getUser = async (params: any) => {
     throw new Error("no user found");
   }
 
-  return sanitizeSqlResult(result);
+  return result;
 };
 
 export default {

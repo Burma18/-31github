@@ -3,6 +3,7 @@ import { config, db } from "../knexfile";
 import routes from "./routes/index";
 import status from "./configs/status";
 import expressSession from "express-session";
+import { authenticate } from "./utils/helpers";
 
 const app = express();
 
@@ -24,11 +25,12 @@ app.use(
     cookie: {
       secure: false,
       httpOnly: true,
-      maxAge: 0, // expires when the browser is closed
+      maxAge: 3 * 24 * 60 * 60 * 1000, // 3 days in milliseconds
     },
   })
 );
 
+// app.use(authenticate);
 app.use("/api/v1", routes);
 
 app.get("/", async (req: any, res: any) => {
@@ -61,7 +63,6 @@ app.use((req: any, res: any, next: any) => {
 // check db
 const dbSelfCheck = async () => {
   const dbSelfCheckQuery = db.select(db.raw("now()"));
-
   try {
     const result = await dbSelfCheckQuery;
     console.log("POSTGRES-DATABASE IS UP AND RUNNING");

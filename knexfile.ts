@@ -4,6 +4,7 @@ import knex from "knex";
 import pgSession from "connect-pg-simple";
 import session from "express-session";
 import path from "path";
+import { Pool } from "pg";
 
 const postgresConnectionString = {
   connectionString: process.env.POSTGRES_CONNECTION_STRING,
@@ -47,10 +48,25 @@ const serverConfig = {
 const environment = process.env.NODE_ENV || "development";
 const configKnex = KNEX_CONFIG[environment];
 
+// ... (other imports and configurations)
+
+const pool = new Pool({
+  connectionString: process.env.POSTGRES_CONNECTION_STRING,
+  host: process.env.POSTGRES_HOST,
+  port: process.env.POSTGRES_PORT as unknown as number,
+  user: process.env.POSTGRES_USER,
+  password: process.env.POSTGRES_PASSWORD,
+});
+
 const sessionStore = new (pgSession(session))({
-  pool: configKnex,
+  pool: pool,
   tableName: "user_sessions",
 });
+
+// const sessionStore = new (pgSession(session))({
+//   pool: configKnex,
+//   tableName: "user_sessions",
+// });
 
 export default KNEX_CONFIG;
 

@@ -35,6 +35,7 @@
 import status from "../configs/status";
 
 const wrap = (inputFunction: any) => {
+  console.log("reached wrap");
   return async function (...args: any[]) {
     try {
       const result = await inputFunction(...args);
@@ -58,6 +59,60 @@ const wrap = (inputFunction: any) => {
     }
   };
 };
+
+// const wrap = (...middlewares: any[]) => {
+//   return async function (req: any, res: any, next: any) {
+//     try {
+//       for (const middleware of middlewares) {
+//         await middleware(req, res, next);
+//       }
+//     } catch (error) {
+//       const err = error as Error;
+//       console.log(error);
+
+//       if (err.hasOwnProperty("message")) {
+//         const errorMessage = status.getStatus(err.message);
+//         if (typeof next === "function") {
+//           next(errorMessage);
+//         }
+//         return errorMessage;
+//       } else {
+//         const genericFailMessage = status.getStatus("generic_fail");
+//         if (typeof next === "function") {
+//           next(genericFailMessage);
+//         }
+//         return genericFailMessage;
+//       }
+//     }
+//   };
+// };
+
+// const wrap = (inputFunction: any) => {
+//   return async function (...args: any[]) {
+//     try {
+//       const lastArg = args[args.length - 1];
+
+//       if (typeof lastArg === 'function') {
+//         // Middleware requiring 'req', 'res', 'next' arguments
+//         return await inputFunction(...args);
+//       } else {
+//         // Middleware requiring a single argument (e.g., userData)
+//         return await inputFunction(args[0]);
+//       }
+//     } catch (error) {
+//       const err = error as Error;
+//       console.log(error);
+
+//       if (err.hasOwnProperty("message")) {
+//         const errorMessage = status.getStatus(err.message);
+//         return errorMessage;
+//       } else {
+//         const genericFailMessage = status.getStatus("generic_fail");
+//         return genericFailMessage;
+//       }
+//     }
+//   };
+// };
 
 export default {
   wrap,

@@ -12,6 +12,7 @@ const registerUser = async (userData: any) => {
 };
 
 const login = async (userData: any) => {
+  console.log("reached login service");
   const login: any = await authModel.login(userData);
   let response: any = status.getStatus("success");
   response.data = {};

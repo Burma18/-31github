@@ -1,4 +1,6 @@
 import bcrypt from "bcrypt";
+import wrapper from "../services/wrapper";
+import status from "../configs/status";
 
 // const generateSalt = (salt, cb) => {
 //   bcrypt.genSalt(salt, (err, data) => {
@@ -64,3 +66,17 @@ export const sanitizeSqlResult = (result: any) => {
 //     }
 //   });
 // };
+
+const authenticate = (req: any, res: any, next: any) => {
+  console.log("reached middleware");
+  console.log("req.session :", req.session);
+  console.log("req.session.user :", req.session.user);
+  if (req.session && req.session.user) {
+    console.log("identified session");
+    next();
+  } else {
+    status.getStatus("authn_fail");
+  }
+};
+
+export { authenticate };

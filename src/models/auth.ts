@@ -25,6 +25,7 @@ const registerUser = async (userData: any) => {
 };
 
 const login = async (userData: any) => {
+  console.log("reacjed model");
   const { email, password } = userData;
 
   const user = await db("users").select("*").where({
