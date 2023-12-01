@@ -1,4 +1,5 @@
 const getStatus = (code: string) => {
+  console.log("reached getSatus function");
   let status = null;
 
   switch (code) {
@@ -8,6 +9,7 @@ const getStatus = (code: string) => {
         error: false,
         message: "Successful",
       };
+      console.log("it was success");
       break;
 
     case "input_missing":
@@ -32,6 +34,7 @@ const getStatus = (code: string) => {
         error: true,
         message: "Authentication failed",
       };
+      console.log("it was authn_fail");
       break;
 
     case "url_missing":

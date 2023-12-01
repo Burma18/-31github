@@ -1,5 +1,4 @@
 import bcrypt from "bcrypt";
-import wrapper from "../services/wrapper";
 import status from "../configs/status";
 
 // const generateSalt = (salt, cb) => {
@@ -75,7 +74,7 @@ const authenticate = (req: any, res: any, next: any) => {
     console.log("identified session");
     next();
   } else {
-    status.getStatus("authn_fail");
+    res.send(status.getStatus("authn_fail"));
   }
 };
 

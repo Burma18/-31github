@@ -14,8 +14,6 @@ const postgresConnectionString = {
   password: process.env.POSTGRES_PASSWORD,
 };
 
-console.log(postgresConnectionString);
-
 const KNEX_CONFIG: any = {
   development: {
     client: "pg",
@@ -47,8 +45,6 @@ const serverConfig = {
 
 const environment = process.env.NODE_ENV || "development";
 const configKnex = KNEX_CONFIG[environment];
-
-// ... (other imports and configurations)
 
 const pool = new Pool({
   connectionString: process.env.POSTGRES_CONNECTION_STRING,

@@ -3,7 +3,6 @@ import { config, db } from "../knexfile";
 import routes from "./routes/index";
 import status from "./configs/status";
 import expressSession from "express-session";
-import { authenticate } from "./utils/helpers";
 
 const app = express();
 
@@ -33,6 +32,25 @@ app.use(
 // app.use(authenticate);
 app.use("/api/v1", routes);
 
+// catch 404
+app.use((req: any, res: any, next: any) => {
+  res.statusCode = 404;
+  res.json(status.getStatus("url_missing"));
+});
+
+// global error handler
+app.use((err: any, req: any, res: any, next: any) => {
+  if (err) {
+    console.log(new Date().toISOString(), err);
+  }
+  if (err.hasOwnProperty("error")) {
+    res.json(err);
+  } else {
+    let err = status.getStatus("generic_fail");
+    res.json(err);
+  }
+});
+
 app.get("/", async (req: any, res: any) => {
   console.log("inside route");
 
@@ -54,12 +72,6 @@ app.get("/", async (req: any, res: any) => {
   }
 });
 
-// catch 404
-app.use((req: any, res: any, next: any) => {
-  res.statusCode = 404;
-  res.json(status.getStatus("url_missing"));
-});
-
 // check db
 const dbSelfCheck = async () => {
   const dbSelfCheckQuery = db.select(db.raw("now()"));
@@ -71,19 +83,6 @@ const dbSelfCheck = async () => {
   }
 };
 dbSelfCheck();
-
-// global error handler
-app.use((err: any, req: any, res: any, next: any) => {
-  if (err) {
-    console.log(new Date().toISOString(), err);
-  }
-  if (err.hasOwnProperty("error")) {
-    res.json(err);
-  } else {
-    let err = status.getStatus("generic_fail");
-    res.json(err);
-  }
-});
 
 app.listen(config.serverConfig.SERVER_PORT, () =>
   console.log("listening on port:  ", config.serverConfig.SERVER_PORT)
