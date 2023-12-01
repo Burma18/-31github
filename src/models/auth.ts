@@ -41,7 +41,6 @@ const login = async (userData: any) => {
   if (!comparePW) {
     throw new Error("password mismatch");
   }
-
   return sanitizeSqlResult(user[0]);
 };
 
